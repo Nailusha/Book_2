@@ -873,3 +873,91 @@ function lastElement(array) {
 
 //стр170 Упражнение
 
+//стр180
+
+function findDate(string) {
+    var dateTime = /(\d{1,2})-(\d{1,2})-(\d{4})/;
+    var match = dateTime.exec(string);
+    return new Date(Number(match[3]),
+        Number(match[2]) - 1,
+        Number(match[1]));
+}
+console.log(findDate("30-1-2003"));
+
+
+//стр186
+
+var s = "the cia and fbi";
+console.log(s.replace(/\b(fbi|cia)\b/g, function (str) {
+    return str.toUpperCase();
+}));
+
+var stock = "1 lemon, 2 cabbages, and 101 eggs";
+function minusOne(match, amount, unit) {
+    amount = Number(amount) - 1;
+    if (amount == 1) // остался только один, удаляем 's' в конце
+        unit = unit.slice(0, unit.length - 1);
+    else if (amount == 0)
+        amount = "no";
+    return amount + " " + unit;
+}
+console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
+
+//стр188
+
+var name = "гарри";
+var text = "А у Гарри на лбу шрам.";
+var regexp = new RegExp("\\b(" + name + ")\\b", "gi");
+console.log(text.replace(regexp, "_$1_"));
+
+//стр191
+
+searchengine = http://www.google.com/search?q=$1
+spitefulness = 9.7
+    ; перед комментариями ставится точка с запятой
+    ; каждая секция относится к отдельному врагу
+    [larry]
+fullname = Larry Doe
+type = бычара из детсада
+website = http://www.geocities.com/CapeCanaveral/11451
+[gargamel]
+fullname = Gargamel
+type = злой волшебник
+outputdir = /home/marijn / enemies / gargamel
+
+
+function parseINI(string) {
+    // Начнём с объекта, содержащего настройки верхнего уровня
+    var currentSection = { name: null, fields: [] };
+    var categories = [currentSection];
+    string.split(/\r?\n/).forEach(function (line) {
+        var match;
+        if (/^\s*(;.*)?$/.test(line)) {
+            return;
+        } else if (match = line.match(/^\[(.*)\]$/)) {
+            currentSection = { name: match[1], fields: [] };
+            categories.push(currentSection);
+        } else if (match = line.match(/^(\w+)=(.*)$/)) {
+            currentSection.fields.push({
+                name: match[1],
+                value: match[2]
+            });
+        } else {
+            throw new Error("Строчка '" + line + "' содержит неверные данные.");
+        }
+    });
+    return categories;
+}
+
+//стр195 Упражнения
+
+//стр202
+
+var dayName = function () {
+    var names = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+    return function (number) {
+        return names[number];
+    };
+}();
+console.log(dayName(3));
+
