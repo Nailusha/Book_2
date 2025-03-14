@@ -961,3 +961,120 @@ var dayName = function () {
 }();
 console.log(dayName(3));
 
+(function () {
+    function square(x) { return x * x; }
+    var hundred = 100;
+    console.log(square(hundred));
+})();
+// → 10000
+
+//стр203
+
+var weekDay = function () {
+    var names = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+    return {
+        name: function (number) { return names[number]; },
+        number: function (name) { return names.indexOf(name); }
+    };
+}();
+console.log(weekDay.name(weekDay.number("Sunday")));
+
+//стр205
+
+function evalAndReturnX(code) {
+    eval(code);
+    return x;
+}
+console.log(evalAndReturnX("var x = 2"));
+
+
+var plusOne = new Function("n", "return n + 1;");
+console.log(plusOne(4));
+
+
+//стр206
+
+function require(name) {
+    var code = new Function("exports", readFile(name));
+    var exports = {};
+
+    code(exports);
+    return exports;
+}
+console.log(require("weekDay").name(1));
+
+function require(name) {
+    if (name in require.cache)
+        return require.cache[name];
+    var code = new Function("exports, module", readFile(name));
+    var exports = {}, module = { exports: exports };
+    code(exports, module);
+    require.cache[name] = module.exports;
+    return module.exports;
+}
+require.cache = Object.create(null);
+
+
+//стр209
+
+var defineCache = Object.create(null);
+var currentMod = null;
+function getModule(name) {
+    if (name in defineCache)
+        return defineCache[name];
+    var module = {
+        exports: null,
+        loaded: false,
+        onLoad: []
+    };
+    defineCache[name] = module;
+    backgroundReadFile(name, function (code) {
+        currentMod = module;
+        new Function("", code)();
+    });
+    return module;
+}
+
+//стр210
+
+function define(depNames, moduleFunction) {
+    var myMod = currentMod;
+    var deps = depNames.map(getModule);
+    deps.forEach(function (mod) {
+        if (!mod.loaded)
+            mod.onLoad.push(whenDepsLoaded);
+    });
+    function whenDepsLoaded() {
+        if (!deps.every(function (m) { return m.loaded; }))
+            return;
+        var args = deps.map(function (m) { return m.exports; });
+        var exports = moduleFunction.apply(null, args);
+        if (myMod) {
+            myMod.exports = exports;
+            myMod.loaded = true;
+            myMod.onLoad.every(function (f) { f(); });
+        }
+    }
+    whenDepsLoaded();
+}
+
+
+//стр213 упражнение
+
+//стр246
+
+function talksAbout(node, string) {
+    if (node.nodeType == document.ELEMENT_NODE) {
+        for (var i = 0; i < node.childNodes.length; i++) {
+            if (talksAbout(node.childNodes[i], string))
+                return true;
+        }
+        return false;
+    } else if (node.nodeType == document.TEXT_NODE) {
+        return node.nodeValue.indexOf(string) > -1;
+    }
+}
+console.log(talksAbout(document.body, "книг"));
+
+
+

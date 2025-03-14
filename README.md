@@ -1,1 +1,1 @@
-# Book_2
+# Выразительный JavaScript
